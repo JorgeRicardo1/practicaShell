@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:ViewModels="clr-namespace:practicaShell.ViewModels"
+             x:Class="practicaShell.Views.CoffeEquipementCVPage">
+    <ContentPage.BindingContext>
+        <ViewModels:CoffeEquipementViewModel/>
+    </ContentPage.BindingContext>
+    <RefreshView
+        Command="{Binding RefreshCommand}"
+        IsRefreshing="{Binding IsBusy, Mode=TwoWay}"
+        RefreshColor="red">
+        <CollectionView
+            BackgroundColor="Beige"
+            IsGrouped="True"
+            ItemSizingStrategy="MeasureAllItems"
+            ItemsSource="{Binding CoffeGroups}"
+            SelectedItem="{Binding SelectedCoffe, Mode=TwoWay}"
+            RemainingItemsThreshold="1"
+            RemainingItemsThresholdReachedCommand="{Binding DelayLoadMoreCommand}"
+            SelectionMode="Single">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span="2"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.EmptyView>
+                <Label Text="NO coffe" HorizontalOptions="Center"/>
+            </CollectionView.EmptyView>
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate>
+                    <StackLayout>
+                        <Label Text="{Binding Key}"/>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Command="{Binding Source={RelativeSource AncestorType={x:Type ViewModels:CoffeEquipementViewModel}}, Path=FavoriteCommand}"
+                                           CommandParameter="{Binding .}"
+                                           BackgroundColor="Orange"
+                                           Text="favorite"/>
+                                <SwipeItem Text="Delete"
+                                           BackgroundColor="red"/>
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                        <Grid Padding="10">
+                            <Frame CornerRadius="20"
+                               HasShadow="True">
+                                <StackLayout >
+                                    <Image Source="{Binding Image}"
+                                       WidthRequest="66"/>
+                                    <StackLayout VerticalOptions="Center">
+                                        <Label VerticalOptions="Center"
+                                           FontSize="Large"
+                                           Text="{Binding Name}"/>
+                                        <Label VerticalOptions="Center"
+                                           FontSize="Large"
+                                           Text="{Binding Roaster}"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </Frame>
+                        </Grid>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.Footer>
+                <StackLayout>
+                    <Button Text="LoadMore"
+                            Command="{Binding LoadMoreCommand}"/>
+                </StackLayout>
+            </CollectionView.Footer>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>

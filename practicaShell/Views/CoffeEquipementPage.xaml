@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:practicaShell.Models"
+             xmlns:ViewModels="clr-namespace:practicaShell.ViewModels"
+             x:Class="practicaShell.Views.CoffeEquipementPage"
+             x:Name="practicaShell">
+    <ContentPage.BindingContext>
+        <ViewModels:CoffeEquipementViewModel/>
+    </ContentPage.BindingContext>
+    <ListView
+        SelectedItem="{Binding SelectedCoffe, Mode=TwoWay}"
+        ItemTapped="ListView_ItemTapped"
+        CachingStrategy="RecycleElement"
+        BackgroundColor="Beige"
+        ItemsSource="{Binding CoffeGroups}"
+        IsGroupingEnabled="True"
+        HasUnevenRows="True"
+        GroupDisplayBinding="{Binding Key}"
+        SeparatorVisibility="None"
+        IsPullToRefreshEnabled="True"
+        IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+        RefreshCommand="{Binding RefreshCommand}">
+        <ListView.ItemTemplate>  
+            <DataTemplate x:DataType="model:Coffee">
+                <ViewCell>
+                    <ViewCell.ContextActions>
+                        <MenuItem Text="Favorite"
+                                  Command="{Binding  Source={x:Reference practicaShell}, Path=BindingContext.FavoriteCommand}"
+                                  CommandParameter="{Binding .}"/>
+                        <MenuItem Text="Delete"/>
+                    </ViewCell.ContextActions>
+                    <Grid Padding="10">
+                        <Frame CornerRadius="20"
+                               HasShadow="True">
+                            <StackLayout Orientation="Horizontal">
+                                <Image Source="{Binding Image}"
+                                       WidthRequest="100"/>
+                                <StackLayout VerticalOptions="Center">
+                                    <Label VerticalOptions="Center"
+                                           FontSize="Large"
+                                           Text="{Binding Name}"/>
+                                    <Label VerticalOptions="Center"
+                                           FontSize="Large"
+                                           Text="{Binding Roaster}"/>
+                                </StackLayout>
+                                <Button Text="Favorite"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ViewModels:CoffeEquipementViewModel}},
+                                                  Path=FavoriteCommand}"
+                                        CommandParameter="{Binding .}"/>
+                            </StackLayout>
+                        </Frame>
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+        <ListView.Footer>
+            <StackLayout>
+                <Button Text="LoadMore"
+                        Command="{Binding LoadMoreCommand}"/>
+            </StackLayout>
+        </ListView.Footer>
+    </ListView>
+</ContentPage>
