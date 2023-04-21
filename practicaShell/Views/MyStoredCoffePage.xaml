@@ -1,50 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:practicaShell.ViewModels"
              xmlns:model="clr-namespace:practicaShell.Models"
-             xmlns:ViewModels="clr-namespace:practicaShell.ViewModels"
-             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
-             x:Class="practicaShell.Views.CoffeEquipementPage"
-             x:Name="practicaShell">
+             x:Name="MyCoffePage"
+             x:DataType="viewmodel:MyCoffeViewModel"
+             x:Class="practicaShell.Views.MyStoredCoffePage">
     <ContentPage.BindingContext>
-        <ViewModels:CoffeEquipementViewModel/>
+        <viewmodel:MyCoffeViewModel/>
     </ContentPage.BindingContext>
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <xct:ItemSelectedEventArgsConverter x:Key="ItemSelectedEventArgsConverter"/>
-        </ResourceDictionary>
-    </ContentPage.Resources>
-    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding AddCommand}"/>
+    </ContentPage.ToolbarItems>
     <ListView
-        SelectedItem="{Binding SelectedCoffe, Mode=TwoWay}"
-        ItemTapped="ListView_ItemTapped"
         CachingStrategy="RecycleElement"
         BackgroundColor="Beige"
-        ItemsSource="{Binding CoffeGroups}"
-        IsGroupingEnabled="True"
+        ItemsSource="{Binding Coffee}"
         HasUnevenRows="True"
-        GroupDisplayBinding="{Binding Key}"
         SeparatorVisibility="None"
         IsPullToRefreshEnabled="True"
         IsRefreshing="{Binding IsBusy, Mode=OneWay}"
-        RefreshCommand="{Binding RefreshCommand}">
-        <ListView.Behaviors>
-            <xct:EventToCommandBehavior
-                EventName="ItemSelected"
-                Command="{Binding SelectedCommand}"
-                EventArgsConverter="{StaticResource ItemSelectedEventArgsConverter}"/>
-        </ListView.Behaviors>
-        <ListView.ItemTemplate>  
+        RefreshCommand="{Binding RefreshCommand}"
+        SelectionMode="None">
+        <ListView.ItemTemplate>
             <DataTemplate x:DataType="model:Coffee">
                 <ViewCell>
                     <ViewCell.ContextActions>
-                        <MenuItem Text="Favorite"
-                                  Command="{Binding  Source={x:Reference practicaShell}, Path=BindingContext.FavoriteCommand}"
+                        <MenuItem Text="Delete"
+                                  Command="{Binding  Source={x:Reference MyCoffePage}, Path=BindingContext.RemoveCommand}"
                                   CommandParameter="{Binding .}"/>
                         <MenuItem Text="Delete"/>
                     </ViewCell.ContextActions>
                     <Grid Padding="10">
-                        <Frame CornerRadius="20"
+                        <Frame CornerRadius="20
                                HasShadow="True">
                             <StackLayout Orientation="Horizontal">
                                 <Image Source="{Binding Image}"
@@ -56,6 +44,9 @@
                                     <Label VerticalOptions="Center"
                                            FontSize="Large"
                                            Text="{Binding Roaster}"/>
+                                    <Label VerticalOptions="Center"
+                                           FontSize="Large"
+                                           Text="{Binding Id}"/>
                                 </StackLayout>
                             </StackLayout>
                         </Frame>
@@ -63,11 +54,5 @@
                 </ViewCell>
             </DataTemplate>
         </ListView.ItemTemplate>
-        <ListView.Footer>
-            <StackLayout>
-                <Button Text="LoadMore"
-                        Command="{Binding LoadMoreCommand}"/>
-            </StackLayout>
-        </ListView.Footer>
     </ListView>
 </ContentPage>

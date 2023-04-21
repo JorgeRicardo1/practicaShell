@@ -15,8 +15,8 @@ namespace practicaShell.ViewModels
 {
     public class CoffeEquipementViewModel : BaseViewModel
     {
-        
 
+        //COMANDOS
         public ObservableCollection<Coffee> Coffee { get; set; }
         public ObservableRangeCollection<Grouping<string, Coffee>> CoffeGroups { get;  }
         public AsyncCommand RefreshCommand { get;}
@@ -24,7 +24,9 @@ namespace practicaShell.ViewModels
         public Command LoadMoreCommand { get;}
         public Command DelayLoadMoreCommand { get; }
         public Command ClearCommand { get; }
+        public AsyncCommand<object> SelectedCommand { get; }
 
+        //CONSTRUCTOR
         public CoffeEquipementViewModel()
         {
             Title = "Coffe equipement";
@@ -46,10 +48,32 @@ namespace practicaShell.ViewModels
             LoadMoreCommand = new Command(LoadMore);
             DelayLoadMoreCommand = new Command(DelayLoadMore);
             ClearCommand = new Command(Clear);
+            SelectedCommand = new AsyncCommand<object>(Selected);
         }
 
+        //VARIABLES
         Coffee _previouslySelected;
         Coffee _selectedCoffe;
+
+        
+        //OBJETOS
+        public Coffee SelectedCoffe
+        {
+            get => _selectedCoffe;
+            set => SetProperty(ref _selectedCoffe, value);
+        }
+
+        //PROCESOS
+
+        async Task Selected(object args)
+        {
+            var coffee = args as Coffee;
+            if (coffee == null)
+            {
+                return;
+            }
+            await Application.Current.MainPage.DisplayAlert("Selected", coffee.Name, "Ok");
+        }
 
         async Task Favorite(Coffee coffee)
         {
@@ -57,22 +81,7 @@ namespace practicaShell.ViewModels
             {
                 return;
             }
-            await Application.Current.MainPage.DisplayAlert("Favorite",coffee.Name, "Ok");
-        }
-        public Coffee SelectedCoffe
-        {
-            get => _selectedCoffe;
-            set
-            {
-                if (value != null)
-                {
-                    Application.Current.MainPage.DisplayAlert("Selected", value.Name, "Ok");
-                    _previouslySelected = value;
-                    value = null;
-                }
-                _selectedCoffe = value;
-                OnPropertyChanged();
-            }
+            await Application.Current.MainPage.DisplayAlert("Favorite", coffee.Name, "Ok");
         }
 
         void LoadMore()
